@@ -1,5 +1,7 @@
 # NemoClaw on DGX Spark
 
+[繁體中文](./spark-install_zh_TW.md) | [English](./spark-install.md)
+
 > **WIP** — This page is actively being updated as we work through Spark installs. Expect changes.
 
 ## Quick Start

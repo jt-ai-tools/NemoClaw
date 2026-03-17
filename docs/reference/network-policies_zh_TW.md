@@ -1,9 +1,9 @@
 ---
 title:
-  page: "NemoClaw 網絡策略 — 基準規則與操作員審批"
+  page: "NemoClaw 網絡策略 — 基線規則和操作員審批"
   nav: "網絡策略"
-description: "基準網絡策略、文件系統規則與操作員審批流程。"
-keywords: ["nemoclaw network policy", "sandbox egress control operator approval", "nemoclaw 網絡策略", "沙盒出口控制操作員審批"]
+description: "基線網絡策略、文件系統規則和操作員審批流程。"
+keywords: ["nemoclaw network policy", "sandbox egress control operator approval"]
 topics: ["generative_ai", "ai_agents"]
 tags: ["openclaw", "openshell", "sandboxing", "network_policy", "security"]
 content:
@@ -20,13 +20,13 @@ status: published
 
 # 網絡策略
 
-NemoClaw 運行時採用默認嚴格的網絡策略。
-沙盒僅能訪問被明確允許的端點。
-任何對未列出目的地的請求都會被 OpenShell 攔截，並提示操作員通過 TUI 即時批准或拒絕。
+NemoClaw 在運行時預設採用嚴格的網絡策略。
+沙盒只能訪問明確允許的端點。
+任何指向未列出目標的請求都會被 OpenShell 攔截，並提示操作員透過 TUI 即時批准或拒絕。
 
-## 基準策略
+## 基線策略
 
-基準策略定義在 `nemoclaw-blueprint/policies/openclaw-sandbox.yaml` 中。
+基線策略定義在 `nemoclaw-blueprint/policies/openclaw-sandbox.yaml` 中。
 
 ### 文件系統
 
@@ -35,12 +35,12 @@ NemoClaw 運行時採用默認嚴格的網絡策略。
 | `/sandbox`, `/tmp`, `/dev/null` | 讀寫 |
 | `/usr`, `/lib`, `/proc`, `/dev/urandom`, `/app`, `/etc`, `/var/log` | 唯讀 |
 
-沙盒進程作為專用的 `sandbox` 用戶和組運行。
-Landlock LSM 強制執行基於最佳努力原則。
+沙盒進程以專用的 `sandbox` 用戶和群組運行。
+Landlock LSM 強制執行基於盡力而為原則。
 
 ### 網絡策略
 
-默認允許以下端點組：
+預設允許以下端點群組：
 
 :::{list-table}
 :header-rows: 1
@@ -102,31 +102,31 @@ Landlock LSM 強制執行基於最佳努力原則。
 
 ### 推理
 
-基準策略僅允許 `local`（本地）推理路由。外部推理提供者通過 OpenShell 網關訪問，而不是通過沙盒直接出口。
+基線策略僅允許 `local` 推理路由。外部推理提供者透過 OpenShell 網關訪問，而不是透過沙盒直接出口。
 
 ## 操作員審批流程
 
-當代理嘗試訪問策略中未列出的端點時，OpenShell 會攔截請求並將其呈現在 TUI 中供操作員審核：
+當代理嘗試訪問策略中未列出的端點時，OpenShell 會攔截請求並將其呈現在 TUI 中供操作員審查：
 
-1. 代理對未列出的主機發起網絡請求。
+1. 代理向未列出的主機發起網絡請求。
 2. OpenShell 攔截連接並記錄該嘗試。
-3. TUI 命令 `openshell term` 顯示被攔截的請求，包括主機、端口和請求的二進制文件。
+3. TUI 命令 `openshell term` 顯示被攔截的請求，包括主機、端口和發起請求的二進制文件。
 4. 操作員批准或拒絕該請求。
 5. 如果獲得批准，該端點將被添加到該會話的運行策略中。
 
-要嘗試此功能，請運行演示腳本：
+要嘗試此功能，請運行演練腳本：
 
 ```console
 $ ./scripts/walkthrough.sh
 ```
 
-這將開啟一個分割的 tmux 會話，左側為 TUI，右側為代理。
+這將開啟一個 split tmux 會話，左側為 TUI，右側為代理。
 
 ## 修改策略
 
 ### 靜態更改
 
-編輯 `nemoclaw-blueprint/policies/openclaw-sandbox.yaml` 並重新運行配置嚮導：
+編輯 `nemoclaw-blueprint/policies/openclaw-sandbox.yaml` 並重新運行引導精靈：
 
 ```console
 $ nemoclaw onboard
@@ -134,7 +134,7 @@ $ nemoclaw onboard
 
 ### 動態更改
 
-在不重啟的情況下向運行中的沙盒應用策略更新：
+在不重啟的情況下對運行的沙盒應用策略更新：
 
 ```console
 $ openshell policy set <policy-file>

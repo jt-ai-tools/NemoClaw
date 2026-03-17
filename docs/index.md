@@ -20,6 +20,8 @@ status: published
 
 # NVIDIA NemoClaw
 
+[繁體中文](./index_zh_TW.md) | [English](./index.md)
+
 [![GitHub](https://img.shields.io/badge/github-repo-green?logo=github)](https://github.com/NVIDIA/NemoClaw)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue)](https://github.com/NVIDIA/NemoClaw/blob/main/LICENSE)
 

@@ -23,6 +23,6 @@
 | docs/reference/architecture.md | ⏳ Not Started | - |
 | docs/reference/commands.md | ⏳ Not Started | - |
 | docs/reference/inference-profiles.md | ⏳ Not Started | - |
-| docs/reference/network-policies.md | ⏳ Not Started | - |
+| docs/reference/network-policies.md | ✅ Completed | docs/reference/network-policies_zh_TW.md |
 | docs/resources/license.md | ⏳ Not Started | - |
 | spark-install.md | ✅ Completed | spark-install_zh_TW.md |

@@ -2,7 +2,7 @@
 
 | File | Status | Translated File |
 | :--- | :--- | :--- |
-| .agents/skills/update-docs-from-commits/SKILL.md | ⏳ Not Started | - |
+| .agents/skills/update-docs-from-commits/SKILL.md | ✅ Completed | .agents/skills/update-docs-from-commits/SKILL_zh_TW.md |
 | CONTRIBUTING.md | ✅ Completed | CONTRIBUTING_zh_TW.md |
 | README.md | ✅ Completed | README_zh_TW.md |
 | SECURITY.md | ✅ Completed | SECURITY_zh_TW.md |

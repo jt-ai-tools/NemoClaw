@@ -15,9 +15,9 @@
 | docs/get-started/quickstart.md | ✅ Completed | docs/get-started/quickstart_zh_TW.md |
 | docs/index.md | ✅ Completed | docs/index_zh_TW.md |
 | docs/inference/set-up-local-nim.md | ✅ Completed | docs/inference/set-up-local-nim_zh_TW.md |
-| docs/inference/set-up-local-vllm.md | ⏳ Not Started | - |
-| docs/inference/switch-inference-providers.md | ⏳ Not Started | - |
-| docs/monitoring/monitor-sandbox-activity.md | ⏳ Not Started | - |
+| docs/inference/set-up-local-vllm.md | ✅ Completed | docs/inference/set-up-local-vllm_zh_TW.md |
+| docs/inference/switch-inference-providers.md | ✅ Completed | docs/inference/switch-inference-providers_zh_TW.md |
+| docs/monitoring/monitor-sandbox-activity.md | ✅ Completed | docs/monitoring/monitor-sandbox-activity_zh_TW.md |
 | docs/network-policy/approve-network-requests.md | ⏳ Not Started | - |
 | docs/network-policy/customize-network-policy.md | ⏳ Not Started | - |
 | docs/reference/architecture.md | ✅ Completed | docs/reference/architecture_zh_TW.md |

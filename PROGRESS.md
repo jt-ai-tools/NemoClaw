@@ -24,5 +24,5 @@
 | docs/reference/commands.md | ✅ Completed | docs/reference/commands_zh_TW.md |
 | docs/reference/inference-profiles.md | ✅ Completed | docs/reference/inference-profiles_zh_TW.md |
 | docs/reference/network-policies.md | ✅ Completed | docs/reference/network-policies_zh_TW.md |
-| docs/resources/license.md | ⏳ Not Started | - |
+| docs/resources/license.md | ✅ Completed | docs/resources/license_zh_TW.md |
 | spark-install.md | ✅ Completed | spark-install_zh_TW.md |

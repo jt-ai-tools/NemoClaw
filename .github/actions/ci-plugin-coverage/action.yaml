@@ -40,9 +40,24 @@ runs:
         npx tsx scripts/check-coverage-ratchet.mts coverage/plugin/coverage-summary.json ci/coverage-threshold-plugin.json "Plugin coverage"
 
     - name: Upload plugin coverage report
-      if: ${{ always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+      if: ${{ github.repository == 'NVIDIA/NemoClaw' && always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
       uses: actions/upload-code-coverage@abb5995db9e0199b0e2bb9dbd136fce4cb1ec4d3 # v1
       with:
         file: coverage/plugin/cobertura-coverage.xml
         language: TypeScript
         label: code-coverage/plugin
+
+    - name: Preserve plugin coverage artifact on forks
+      if: ${{ always() && github.repository != 'NVIDIA/NemoClaw' }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: plugin-coverage-report
+        path: coverage/plugin/
+        if-no-files-found: warn
+        retention-days: 14
+
+    - name: Explain fork coverage reporting
+      if: ${{ always() && github.repository != 'NVIDIA/NemoClaw' }}
+      shell: bash
+      run: |
+        printf '%s\n' 'GitHub Code Quality upload is skipped on this fork because the feature is not enabled. plugin tests, coverage generation, and coverage ratchet checks remain required. Any generated coverage files are retained as the plugin-coverage-report artifact.' >>"$GITHUB_STEP_SUMMARY"

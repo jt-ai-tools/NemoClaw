@@ -33,3 +33,5 @@ ignores:
   - "node_modules/**"
   # Generated catalog export, including signer-produced skill-card.md files.
   - "skills/**"
+  # Preserve the historical translation snapshot byte-for-byte.
+  - "translations/legacy/nemoclaw-fork/**"

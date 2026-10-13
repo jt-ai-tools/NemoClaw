@@ -699,8 +699,10 @@ jobs:
               echo "::error::Main push E2E requires exact before and candidate commit SHAs" >&2
               exit 1
             }
-            CHANGED_FILES="$(git diff --name-only --diff-filter=ACMRD "${BEFORE_SHA}" "${CANDIDATE_SHA}")"
-            export CHANGED_FILES
+            CHANGED_FILES_FILE="$(mktemp "${RUNNER_TEMP}/nemoclaw-changed-files.XXXXXX")"
+            trap 'rm -f -- "$CHANGED_FILES_FILE"' EXIT
+            git diff --name-only --diff-filter=ACMRD "${BEFORE_SHA}" "${CANDIDATE_SHA}" >"$CHANGED_FILES_FILE"
+            export CHANGED_FILES_FILE
           fi
           npx --no-install tsx tools/e2e/workflow-plan.mts --ci-output
 

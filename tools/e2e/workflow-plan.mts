@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { appendFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
 import { HOSTED_PROVIDER_SMOKE_CASES } from "./hosted-provider-smoke.mts";
 import { requiresManagedImages } from "./workflow-prerequisites.mts";
 import path from "node:path";
@@ -515,7 +515,10 @@ function runtimeProvidersByJob(
 
 function changedFilesFromEnvironment(environment: NodeJS.ProcessEnv): string[] | undefined {
   if (environment.EVENT_NAME !== "push") return undefined;
-  const declared = environment.CHANGED_FILES;
+  const declared =
+    environment.CHANGED_FILES_FILE === undefined
+      ? environment.CHANGED_FILES
+      : readFileSync(environment.CHANGED_FILES_FILE, "utf8");
   if (declared === undefined) {
     throw new Error("E2E planner requires CHANGED_FILES for a push event");
   }

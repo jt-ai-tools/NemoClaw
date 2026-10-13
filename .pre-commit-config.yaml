@@ -47,16 +47,16 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^skills/[^/]+/skill\.oms\.sig$
+        exclude: ^(skills/[^/]+/skill\.oms\.sig$|translations/legacy/nemoclaw-fork/)
         stages: [pre-commit]
         priority: 0
       - id: end-of-file-fixer
-        exclude: ^skills/[^/]+/skill\.oms\.sig$
+        exclude: ^(skills/[^/]+/skill\.oms\.sig$|translations/legacy/nemoclaw-fork/)
         stages: [pre-commit]
         priority: 0
       - id: mixed-line-ending
         args: ["--fix=lf"]
-        exclude: ^skills/[^/]+/skill\.oms\.sig$
+        exclude: ^(skills/[^/]+/skill\.oms\.sig$|translations/legacy/nemoclaw-fork/)
         priority: 0
 
   # ── Priority 0: reject force-added ignored files ───────────────────────────
@@ -80,7 +80,7 @@ repos:
         entry: bash scripts/check-spdx-headers.sh --fix
         language: system
         files: ^(nemoclaw/src/.*\.ts|scripts/.*\.ts|nemoclaw-blueprint/.*\.py|.*\.sh)$
-        exclude: ^nemoclaw-blueprint/.*__init__\.py$
+        exclude: ^(nemoclaw-blueprint/.*__init__\.py$|translations/legacy/nemoclaw-fork/)
         pass_filenames: true
         priority: 4
 
@@ -100,6 +100,7 @@ repos:
     rev: v3.12.0-2
     hooks:
       - id: shfmt
+        exclude: ^translations/legacy/nemoclaw-fork/
         args:
           - -w
           - -i

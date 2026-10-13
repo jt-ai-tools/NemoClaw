@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -1287,6 +1287,71 @@ describe("E2E workflow plan", () => {
         },
       ),
     ).toThrow("Invalid gateway runtimes: containerd");
+  });
+
+  it("preserves push selection with a changed-file list larger than an environment string", () => {
+    const directory = mkdtempSync(path.join(tmpdir(), "nemoclaw-workflow-plan-large-diff-"));
+    const changedFiles = [
+      "tools/e2e/workflow-plan.mts",
+      ...Array.from({ length: 4096 }, (_, index) =>
+        `docs/legacy/${index}/${"historical-documentation-".repeat(4)}.md`,
+      ),
+      "tools/e2e/workflow-plan.mts",
+      "",
+    ].join("\n");
+    const file = path.join(directory, "changed-files.txt");
+    const outputFromEnvironment = path.join(directory, "environment-output");
+    const outputFromFile = path.join(directory, "file-output");
+    const summaryFromEnvironment = path.join(directory, "environment-summary.md");
+    const summaryFromFile = path.join(directory, "file-summary.md");
+    try {
+      expect(Buffer.byteLength(changedFiles)).toBeGreaterThan(128 * 1024);
+      writeFileSync(file, changedFiles);
+      writeE2eWorkflowPlanCiOutput(
+        {},
+        {
+          EVENT_NAME: "push",
+          INFERENCE_MODE: "mock",
+          CHANGED_FILES: changedFiles,
+          GITHUB_OUTPUT: outputFromEnvironment,
+          GITHUB_STEP_SUMMARY: summaryFromEnvironment,
+        },
+      );
+      writeE2eWorkflowPlanCiOutput(
+        {},
+        {
+          EVENT_NAME: "push",
+          INFERENCE_MODE: "mock",
+          CHANGED_FILES: "ignored-because-file-takes-precedence",
+          CHANGED_FILES_FILE: file,
+          GITHUB_OUTPUT: outputFromFile,
+          GITHUB_STEP_SUMMARY: summaryFromFile,
+        },
+      );
+      expect(readFileSync(outputFromFile, "utf8")).toBe(readFileSync(outputFromEnvironment, "utf8"));
+      expect(readFileSync(summaryFromFile, "utf8")).toBe(readFileSync(summaryFromEnvironment, "utf8"));
+    } finally {
+      rmSync(directory, { force: true, recursive: true });
+    }
+  });
+
+  it("fails closed when declared changed-file evidence cannot be read", () => {
+    const directory = mkdtempSync(path.join(tmpdir(), "nemoclaw-workflow-plan-missing-diff-"));
+    try {
+      expect(() =>
+        writeE2eWorkflowPlanCiOutput(
+          {},
+          {
+            EVENT_NAME: "push",
+            INFERENCE_MODE: "mock",
+            CHANGED_FILES: "docs/README.md",
+            CHANGED_FILES_FILE: path.join(directory, "missing.txt"),
+          },
+        ),
+      ).toThrow(/ENOENT/);
+    } finally {
+      rmSync(directory, { force: true, recursive: true });
+    }
   });
 
   it("requires changed-file evidence for push planning", () => {

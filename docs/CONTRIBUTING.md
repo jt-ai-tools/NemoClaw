@@ -1,163 +1,119 @@
+<!--
+  SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+-->
+
 # Contributing to NemoClaw Documentation
 
-This guide covers how to write, edit, and review documentation for NemoClaw. If you change code that affects user-facing behavior, update the relevant docs in the same PR.
+Before requesting review, update the owning page.
+Preserve every supported agent variant.
+Run the documentation build successfully and obtain an independent documentation writer review.
 
-## Use the Agent Skills
+Use this guide for the contributor journey. Follow the linked contracts for detailed style,
+generation, routing, and publishing rules.
 
-If you use an AI coding agent (Cursor, Claude Code, Codex, etc.), the repo includes skills that automate doc work. Use them before writing from scratch.
+## Decide What to Update
 
-| Skill | What it does | When to use |
-|---|---|---|
-| `update-docs-from-commits` | Scans recent commits for user-facing changes and drafts doc updates. | After landing features, before a release, or to find doc gaps. |
+Update documentation when a change affects a user task, command, option, default, configuration,
+prerequisite, supported platform, security boundary, troubleshooting step, or other documented
+behavior. Update the changelog when a user-visible change belongs in the next release.
 
-The skills live in `.agents/skills/` and follow the style guide below automatically. To use one, ask your agent to run it. For example, ask it to "catch up the docs for everything merged since v0.2.0".
+Make user-facing changes in `docs/`.
+NemoClaw publishes these Fern pages as HTML and Markdown.
+It also publishes `llms.txt` for AI documentation discovery.
+Keep `.agents/skills/nemoclaw-user-guide/SKILL.md` small.
+Update it and `docs/resources/agent-skills.mdx` only when documentation routing changes.
 
-## When to Update Docs
+Canonical documentation describes supported NemoClaw behavior. A documentation PR cannot create a
+new supported integration, workflow, image, third-party stack, or product surface. Confirm new
+surfaces through the root [product scope gate](../AGENTS.md#product-scope-gate). Route independent
+solutions through [Community Solutions](resources/community-contributions).
 
-Update documentation when your change:
+## Find the Owning Page
 
-- Adds, removes, or renames a CLI command or flag.
-- Changes default behavior or configuration.
-- Adds a new feature that users interact with.
-- Fixes a bug that the docs describe incorrectly.
-- Changes an API, protocol, or policy schema.
+Map the changed behavior to an existing page before creating a page. Read the complete page, its
+navigation entries in `index.yml`, applicable generated variants, inbound links, and redirects.
+Keep one canonical owner for each procedure or reference fact.
 
-## Building Docs Locally
+Use these contracts:
 
-Verify the docs are built correctly by building them and checking the output.
-
-To build the docs, run:
-
-```bash
-make docs
-```
-
-To serve the docs locally and automatically rebuild on changes, run:
-
-```bash
-make docs-live
-```
-
-## Writing Conventions
-
-### Format
-
-- Docs use [MyST Markdown](https://myst-parser.readthedocs.io/), a Sphinx-compatible superset of CommonMark.
-- Every page starts with YAML frontmatter (title, description, topics, tags, content type).
-- Include the SPDX license header after frontmatter:
-  ```
-  <!--
-    SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-    SPDX-License-Identifier: Apache-2.0
-  -->
-  ```
-
-### Frontmatter Template
-
-```yaml
----
-title:
-  page: "NemoClaw Page Title — Subtitle with Context"
-  nav: "Short Nav Title"
-description: "One-sentence summary of the page."
-keywords: ["primary keyword", "secondary keyword phrase"]
-topics: ["generative_ai", "ai_agents"]
-tags: ["openclaw", "openshell", "relevant", "tags"]
-content:
-  type: concept | how_to | get_started | tutorial | reference
-  difficulty: technical_beginner | technical_intermediate | technical_advanced
-  audience: ["developer", "engineer"]
-status: published
----
-```
-
-### Page Structure
-
-1. H1 heading matching the `title.page` value.
-2. A one- or two-sentence introduction stating what the page covers.
-3. Sections organized by task or concept, using H2 and H3. Start each section with an introductory sentence that orients the reader.
-4. A "Next Steps" section at the bottom linking to related pages.
-
-## Style Guide
-
-Write like you are explaining something to a colleague. Be direct, specific, and concise.
-
-### Voice and Tone
-
-- Use active voice. "The CLI creates a gateway" not "A gateway is created by the CLI."
-- Use second person ("you") when addressing the reader.
-- Use present tense. "The command returns an error" not "The command will return an error."
-- State facts. Do not hedge with "simply," "just," "easily," or "of course."
-
-### Things to Avoid
-
-These patterns are common in LLM-generated text and erode trust with technical readers. Remove them during review.
-
-| Pattern | Problem | Fix |
-|---|---|---|
-| Unnecessary bold | "This is a **critical** step" on routine instructions. | Reserve bold for UI labels, parameter names, and genuine warnings. |
-| Em dashes everywhere | "The gateway — which runs in Docker — creates sandboxes." | Use commas or split into two sentences. Em dashes are fine sparingly but should not appear multiple times per paragraph. |
-| Superlatives | "OpenShell provides a powerful, robust, seamless experience." | Say what it does, not how great it is. |
-| Hedge words | "Simply run the command" or "You can easily configure..." | Drop the adverb. "Run the command." |
-| Emoji in prose | "Let's get started!" | No emoji in documentation prose. |
-| Rhetorical questions | "Want to secure your agents? Look no further!" | State the purpose directly. |
-
-### Formatting Rules
-
-- End every sentence with a period.
-- One sentence per line in the source file (makes diffs readable).
-- Use `code` formatting for CLI commands, file paths, flags, parameter names, and values.
-- Use code blocks with the `console` language for CLI examples. Prefix commands with `$`:
-  ```console
-  $ nemoclaw onboard
-  ```
-- Use tables for structured comparisons. Keep tables simple (no nested formatting).
-- Use MyST admonitions (`:::{tip}`, `:::{note}`, `:::{warning}`) for callouts, not bold text.
-- Avoid nested admonitions.
-- Do not number section titles. Write "Deploy a Gateway" not "Section 1: Deploy a Gateway" or "Step 3: Verify."
-- Do not use colons in titles. Write "Deploy and Manage Gateways" not "Gateways: Deploy and Manage."
-- Use colons only to introduce a list. Do not use colons as general-purpose punctuation between clauses.
-
-### Word List
-
-Use these consistently:
-
-| Use | Do not use |
+| Work | Canonical owner |
 |---|---|
-| gateway | Gateway (unless starting a sentence) |
-| sandbox | Sandbox (unless starting a sentence) |
-| CLI | cli, Cli |
-| API key | api key, API Key |
-| NVIDIA | Nvidia, nvidia |
-| NemoClaw | nemoclaw (in prose), Nemoclaw |
-| OpenClaw | openclaw (in prose), Openclaw |
-| OpenShell | Open Shell, openShell, Openshell, openshell |
-| mTLS | MTLS, mtls |
-| YAML | yaml, Yaml |
+| Voice, terminology, claims, and general prose | [`WRITING.md`](../WRITING.md) |
+| MDX frontmatter, page and procedure structure, code blocks, and product names | [`STYLE.md`](STYLE.md) |
+| Changelog, starter prompt, variants, route links, and publication | [`AUTOMATION.md`](AUTOMATION.md) |
+| Post-merge credential and trust boundary | [`tools/post-merge-docs/README.md`](../tools/post-merge-docs/README.md) |
+| Agent-specific documentation workflow | [`docs/AGENTS.md`](AGENTS.md) |
+| Repository contribution and PR requirements | [Root contributor guide](../CONTRIBUTING.md) |
 
-## Submitting Doc Changes
+Do not copy these contracts into a page. Link to the canonical owner when contributors need more
+detail.
 
-1. Create a branch following the project convention.
-2. Make your changes.
-3. Build locally with `make docs` and verify the output.
-4. Open a PR with `docs:` as the conventional commit type.
+## Write the Change
 
+Write for the user task and put the conclusion or required action first. Preserve supported variants,
+public routes, and anchors. Use the [style and structure contract](STYLE.md) for page content and the
+[automation contract](AUTOMATION.md) when the change affects generated pages, navigation, routes, or
+the changelog.
+
+Follow the [procedure structure](STYLE.md#procedure-structure) for operational steps.
+
+Do not describe unsupported behavior as canonical NemoClaw functionality. Do not add speculative
+pages or duplicate a procedure to improve discoverability; add navigation or a link instead.
+
+## Validate the Change
+
+Run the documentation build from the repository root:
+
+```bash
+npm run docs
 ```
-docs: update quickstart for new onboard wizard
-```
 
-If your doc change accompanies a code change, include both in the same PR and use the code change's commit type:
+This command prepares generated documentation and validates the Fern configuration, links, and MDX.
+Inspect the generated output under `docs/_build/`. Fix source files rather than editing generated
+files directly.
 
-```
-feat(cli): add policy-add command
-```
+Use `npm run docs:live` only when the change needs visual inspection. Follow any additional
+validation required by [the automation contract](AUTOMATION.md) for generated variants, routes, or
+changelog changes.
 
-## Reviewing Doc PRs
+Follow the root contributor guide's [validation procedure](../CONTRIBUTING.md#validate-the-change)
+for Git hooks and PR-level validation.
 
-When reviewing documentation:
+Documentation-only changes do not require `npm test` or `npm run check` unless they alter generated
+runtime behavior, test infrastructure, or another repository-wide contract. Run focused tests when
+the change affects generated or runtime behavior. Record only checks that ran, and rerun affected
+validation after later edits or hook autofixes.
 
-- Check that the style guide rules above are followed.
-- Watch for LLM-generated patterns (excessive bold, em dashes, filler).
-- Verify code examples are accurate and runnable.
-- Confirm cross-references and links are not broken.
-- Build locally to check rendering.
+## Obtain Independent Review
+
+Before a documentation-only handoff, obtain an independent documentation writer review of the exact
+commit. Give the reviewer the reader, task, changed pages, validation evidence, and applicable style
+or automation contracts.
+
+The review must check:
+
+- task completeness and factual accuracy;
+- commands, options, defaults, and expected results;
+- variant, route, navigation, and redirect coverage;
+- duplicate or displaced ownership;
+- security, credential, and lifecycle claims;
+- compliance with `WRITING.md` and `STYLE.md`.
+
+Resolve every valid finding or explain why it does not apply. Rerun affected validation after later
+edits.
+
+## Submit the Pull Request
+
+Use `docs:` as the Conventional Commit type. Follow the
+[root contributor guide](../CONTRIBUTING.md#submit-the-pull-request) and complete the pull
+request template. Record:
+
+- the reader outcome and reason for the change;
+- the pages and contracts changed;
+- `npm run docs` and any focused validation results;
+- the independent review result;
+- affected variants, routes, navigation, or redirects, when applicable.
+
+After publication, follow CI and review to completion. Keep the pull request description and
+validation evidence current after each revision.

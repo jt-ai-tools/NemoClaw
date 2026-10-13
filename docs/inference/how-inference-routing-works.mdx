@@ -1,0 +1,73 @@
+---
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+title: "About Inference Routing"
+sidebar-title: "About Inference Routing"
+description: "Understand how NemoClaw routes sandbox inference through OpenShell without exposing provider credentials."
+description-agent: "Explains the NemoClaw inference route and credential boundary. Use when tracing inference traffic or determining where provider credentials reside."
+keywords: ["nemoclaw inference routing", "inference.local", "openshell inference proxy"]
+content:
+  type: "concept"
+---
+NemoClaw gives agents a managed inference path while OpenShell handles the selected upstream provider on the host.
+This design keeps provider credentials outside the sandbox.
+
+## Request Path
+
+New NVIDIA Endpoints, OpenAI, Anthropic, Google Gemini, OpenRouter, and Hermes Provider selections use sandbox-attached OpenShell providers.
+The agent calls the selected provider's API hostname with a credential placeholder.
+OpenShell checks the destination, executable, and allowed request paths, then supplies the host-managed credential.
+
+```text
+Sandbox agent -> provider API hostname -> sandbox-attached OpenShell provider -> selected hosted service
+```
+
+| Provider | Agent endpoint |
+| --- | --- |
+| NVIDIA Endpoints | `https://integrate.api.nvidia.com/v1` |
+| OpenAI | `https://api.openai.com/v1` |
+| Anthropic | `https://api.anthropic.com` |
+| Google Gemini | `https://generativelanguage.googleapis.com/v1beta/openai/` |
+| OpenRouter | `https://openrouter.ai/api/v1` |
+| Hermes Provider | `https://inference-api.nousresearch.com/v1`, or the endpoint returned by authenticated login |
+
+Each sandbox records its selected provider attachment. Changing one sandbox's native selection does not change another sandbox's route.
+OpenRouter attribution headers remain in the managed agent configuration.
+For an endpoint returned by Hermes login, NemoClaw records its accepted public IP addresses and restricts the provider and sandbox policy to those addresses.
+A different destination cannot gain access through a later DNS change.
+
+Existing sandboxes without a native attachment retain their recorded shared route.
+User-supplied endpoints, local inference, and Model Router also retain the shared route in this migration.
+
+```text
+Sandbox agent -> inference.local -> shared OpenShell route -> selected provider and model
+```
+
+Use `$$nemoclaw inference get` to inspect the selected sandbox's recorded route.
+`status`, `doctor`, and startup checks verify its recorded native provider identity before using a native attachment.
+Missing or conflicting ownership stops the operation instead of falling back to the shared route.
+
+## Credential Boundary
+
+Provider credentials stay on the host and flow through the OpenShell provider system.
+The sandbox does not receive the raw upstream API key.
+
+Local Ollama and local vLLM routes do not require the host `OPENAI_API_KEY`.
+NemoClaw uses provider-specific local tokens for those routes.
+Rebuilds of legacy local-inference sandboxes migrate away from stale OpenAI credential requirements.
+When a rebuild reuses an automatically bridged compatible-endpoint route without a host API key, NemoClaw reapplies the config-only bridge rewrite without reading or passing the credential stored in OpenShell.
+
+<AgentOnly variant="deepagents">
+
+## Deep Agents Configuration
+
+For Deep Agents, NemoClaw writes `/sandbox/.deepagents/config.toml` with a managed OpenAI-compatible provider, a scoped placeholder API key, and `use_responses_api = false`. Supported native hosted selections use the endpoints above. Shared-route selections retain `https://inference.local/v1`.
+The managed `dcode` runtime uses Chat Completions through OpenShell even when a compatible endpoint also supports the Responses API.
+
+</AgentOnly>
+
+## Related Topics
+
+- [Choose an Inference Provider](learn-and-choose/choose-inference-provider) compares the upstream routes that OpenShell can use.
+- [View the Active Inference Route](manage-inference/view-active-inference-route) shows the provider and model currently selected.
+- [Verify the Sandbox Inference Route](validate-inference/verify-inference-route) tests the configured path.
